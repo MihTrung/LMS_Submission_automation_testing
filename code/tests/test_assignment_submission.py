@@ -6,7 +6,7 @@ from pages.submission_page import SubmissionPage
 class TestAssignmentSubmission:
     """
     Finalized Test suite for LMS Assignment Submission.
-    Covers TC01 to TC09 from TestDesign_v2.md.
+    Covers TC01 to TC09.
     """
 
     def get_file_path(self, filename: str) -> str:
