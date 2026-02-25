@@ -28,6 +28,36 @@ class TestAssignmentSubmission:
         assert "Đã nộp" in status_text or "Submitted" in status_text
         print("TC01: Standard submission verified.")
 
+    def test_tc02_multiple_file_submission(self, submission_page: SubmissionPage):
+        """Scenario: TC02 – Submit 3 valid files and verify status."""
+        file_path = self.get_file_path("small_file.pdf")
+        
+        submission_page.start_submission()
+        for i in range(3):
+            unique_name = f"tc02_file_{i+1}.pdf"
+            submission_page.upload_file(file_path, save_as_name=unique_name, handle_conflict=True)
+            
+        submission_page.confirm_submission()
+        
+        status_text = submission_page.get_status_text()
+        assert "Đã nộp" in status_text or "Submitted" in status_text
+        print("TC02: 3-file submission verified.")
+
+    def test_tc03_maximum_file_submission(self, submission_page: SubmissionPage):
+        """Scenario: TC03 – Submit exactly 5 valid files (max limit) and verify."""
+        file_path = self.get_file_path("small_file.pdf")
+        
+        submission_page.start_submission()
+        for i in range(5):
+            unique_name = f"tc03_file_{i+1}.pdf"
+            submission_page.upload_file(file_path, save_as_name=unique_name, handle_conflict=True)
+            
+        submission_page.confirm_submission()
+        
+        status_text = submission_page.get_status_text()
+        assert "Đã nộp" in status_text or "Submitted" in status_text
+        print("TC03: 5-file maximum submission verified.")
+
     def test_tc04_boundary_20mb_submission(self, submission_page: SubmissionPage):
         """Scenario: TC04 – Upload 19.5MB file (safe boundary) and verify."""
         file_path = self.get_file_path("boundary_file.pdf")

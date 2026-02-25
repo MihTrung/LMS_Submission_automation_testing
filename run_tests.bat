@@ -12,7 +12,8 @@ echo Starting LMS Automation Test Suite...
 echo -------------------------------------
 
 :: Run all tests across all configured browsers (defined in pytest.ini)
-.\venv\Scripts\pytest.exe code/tests/test_assignment_submission.py %*
+:: Use 'python -m pytest' to avoid hardcoded paths in the launcher executable
+call .\venv\Scripts\python.exe -m pytest code/tests/test_assignment_submission.py %*
 
 echo -------------------------------------
 echo Testing Complete.
