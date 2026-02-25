@@ -37,11 +37,23 @@ class SubmissionPage:
         # Status & Success Locators
         self.status_table = page.locator(".submissionstatustable")
         self.success_indicator = page.get_by_text("Đã nộp để chấm điểm") # Based on Vietnamese UI
+        self.login_error_box = page.locator(".alert-danger, #loginerrormessage")
 
     def navigate(self, url: str):
-        """Navigates directly to the assignment page."""
+        """Navigates directly to the assignment page and checks session."""
         self.page.goto(url)
         self.page.wait_for_load_state("networkidle")
+        self.check_session()
+
+    def check_session(self):
+        """Checks if the session is still valid or redirected to login."""
+        if "login/index.php" in self.page.url:
+            # Use .first to avoid strict mode violation if multiple error elements exist
+            error_loc = self.login_error_box.first
+            error_text = error_loc.inner_text() if error_loc.is_visible() else "Unknown login error"
+            print(f"Auth Failure: Redirected to login page. Current URL: {self.page.url}")
+            print(f"Login Error Message: {error_text}")
+            raise Exception(f"Authentication Session Expired or Invalid. Please run 'python scripts/get_state.py' to re-authenticate. Details: {error_text}")
 
     def cleanup_submission(self):
         """
