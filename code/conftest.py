@@ -19,6 +19,7 @@ def browser_context_args(browser_context_args):
 def target_url():
     return os.getenv("TARGET_URL")
 
+
 @pytest.fixture
 def submission_page(page, target_url):
     """

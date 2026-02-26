@@ -31,6 +31,50 @@ graph TD
     TDF -.-> TL
 ```
 
+## 🔄 Running Flow
+
+```mermaid
+graph TD
+    Start([Start]) --> Setup{Environment Ready?}
+    
+    %% Setup Phase
+    Setup -- No --> RunSetup[Run setup.bat]
+    RunSetup --> CreateVenv[Create Virtual Environment]
+    CreateVenv --> InstallDeps[Install Requirements & Browsers]
+    InstallDeps --> AuthCheck
+    
+    Setup -- Yes --> AuthCheck{Auth State Valid?}
+    
+    %% Auth Phase
+    AuthCheck -- No/Expired --> RunGetState[Run scripts/get_state.py]
+    RunGetState --> ManualLogin[Manual Login in Browser]
+    ManualLogin --> SaveState[Save storage_state.json]
+    SaveState --> ExecuteSuite
+    
+    AuthCheck -- Yes --> ExecuteSuite[Run run_tests.bat]
+    
+    %% Internal Execution Logic
+    subgraph "Pytest Internal Flow"
+        direction TB
+        Init[Initialize pytest] --> LoadEnv[Load .env & pytest.ini]
+        LoadEnv --> Conftest[conftest.py: Load storage_state.json]
+        Conftest --> Discovery[Discover 9 Test Cases]
+        Discovery --> Para[Parallel Multi-Browser Execution]
+        Para --> BrowserX[Chromium / Firefox / WebKit]
+        BrowserX --> Assertions[Assertions & Snapshots]
+    end
+    
+    ExecuteSuite --> Init
+    Assertions --> Reports[Generate XML/HTML Reports & Videos]
+    Reports --> End([End])
+
+    %% Styling
+    style RunSetup fill:#f9f,stroke:#333
+    style RunGetState fill:#bbf,stroke:#333
+    style ExecuteSuite fill:#bfb,stroke:#333
+    style End fill:#6f6,stroke:#333
+```
+
 This project provides an automated testing framework for LMS assignment submissions functionality.
 
 ## 📁 Repository Structure
